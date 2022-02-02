@@ -1,0 +1,10 @@
+{
+    "theme_color": "#1489ff",
+    "background_color": "#1489ff",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "sudoku",
+    "short_name": "sudoku",
+    "icons": []
+}

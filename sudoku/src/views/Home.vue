@@ -1,0 +1,93 @@
+<template>
+  <div class="home">
+    <div class="menu" v-if="!playing">
+      <div class="menu-inner" :key="playing">
+        <h2>Sudoku</h2>
+        <button @click="startEasyGame">Easy</button>
+        <button @click="startMediumGame">Medium</button>
+        <button @click="startHardGame">Hard</button>
+        <button @click="startSolver">Solver</button>
+      </div>
+    </div>
+    <Game v-if="playing" :currentDifficulty="difficulty" />
+    <div class="menu" v-if="playing">
+      <div class="menu-inner" :key="playing">
+        <button @click="goBack">Back</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import Game from "@/components/Game.vue"; // @ is an alias to /src
+
+@Options({
+  components: {
+    Game,
+  },
+})
+export default class Home extends Vue {
+  playing = false;
+  difficulty!: string;
+
+  startEasyGame() {
+    this.difficulty = "easy";
+    this.playing = true;
+  }
+
+  startMediumGame() {
+    this.difficulty = "medium";
+    this.playing = true;
+  }
+
+  startHardGame() {
+    this.difficulty = "hard";
+    this.playing = true;
+  }
+
+  goBack() {
+    this.playing = false;
+  }
+}
+</script>
+
+<style lang="scss">
+.menu {
+  position: absolute;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  h2 {
+    justify-content: center;
+  }
+
+  .menu-inner {
+    display: flex;
+    background: #ffffff;
+    padding: 18px;
+    flex-direction: column;
+
+
+    button {
+      border: solid 1px #1489ff;
+      background: #1489ff;
+      color: #ffffff;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      margin-bottom: 1em;
+      width: 200px;
+
+      &:hover {
+        background: #ffffff;
+        color: #1489ff;
+      }
+    }
+  }
+}
+</style>
