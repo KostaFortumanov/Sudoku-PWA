@@ -19,13 +19,9 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Sudoku from "../services/sudoku";
 
 @Options({
-  emits: ["click"],
-  props: {
-    notesMode: Boolean,
-  },
+  emits: ["click"]
 })
 export default class Controls extends Vue {
   numpad = [["1", "2", "3", "4", "5", "6", "7", "8", "9"]];

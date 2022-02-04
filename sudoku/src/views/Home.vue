@@ -7,11 +7,13 @@
         <button @click="startMediumGame">Medium</button>
         <button @click="startHardGame">Hard</button>
         <button @click="startSolver">Solver</button>
+        <button @click="dailyChallenge">Daily challenge</button>
       </div>
     </div>
-    <Game v-if="playing" :currentDifficulty="difficulty" />
+    <Game ref="game" v-if="playing" :currentDifficulty="difficulty" />
     <div class="menu" v-if="playing">
       <div class="menu-inner" :key="playing">
+        <button v-if="solving" @click="startSolver(); this.$refs.game.solve();">Solve</button>
         <button @click="goBack">Back</button>
       </div>
     </div>
@@ -29,6 +31,7 @@ import Game from "@/components/Game.vue"; // @ is an alias to /src
 })
 export default class Home extends Vue {
   playing = false;
+  solving = false;
   difficulty!: string;
 
   startEasyGame() {
@@ -46,6 +49,12 @@ export default class Home extends Vue {
     this.playing = true;
   }
 
+  startSolver() {
+    this.difficulty = 'solve';
+    this.playing = true;
+    this.solving = true;
+  }
+
   goBack() {
     this.playing = false;
   }
@@ -57,7 +66,7 @@ export default class Home extends Vue {
   position: absolute;
   z-index: 11;
   width: 100%;
-  height: 100%;
+  // height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;

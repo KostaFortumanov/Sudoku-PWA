@@ -1,6 +1,6 @@
 <template>
   <div class="game" :key="gameString">
-    <h2>{{ currentDifficulty }} - {{ formatTime() }}</h2>
+    <h2>{{ currentDifficulty }} <span v-if="currentDifficulty != 'solve'"> - {{ formatTime() }}</span></h2>
     <div class="game-wrapper">
       <div class="game-board">
         <template v-if="game.isGameOver">
@@ -10,7 +10,7 @@
               :class="{ 'hide-overlay': !isOverlayVisible }"
               :key="isOverlayVisible"
             >
-              <h2>Game Finished!</h2>
+              <h2>Game Finished with time {{ formatTime() }}!</h2>
               <button @click="handleControls(['new'])">Start a New Game</button>
               <button @click="onOverlayClick">View Game</button>
             </div>
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <Controls @click="handleControls" :notesMode="isNotesMode" />
+    <Controls @click="handleControls" />
   </div>
 </template>
 
@@ -66,7 +66,7 @@ export default class Game extends Vue {
   isOverlayVisible = false;
   selectedValues: number[] = [];
   currentTime = 0;
-  interval!: any;
+  score = -1;
 
   formatTime() {
     let sec: any = this.currentTime % 60;
@@ -79,17 +79,20 @@ export default class Game extends Vue {
   created() {
     this.game.start(this.currentDifficulty);
     this.gameString = this.game.getString();
-    this.interval = setInterval(() => {
-      this.currentTime++;
-    }, 1000);
   }
 
   mounted() {
     window.addEventListener("keydown", this.handleKeyPress);
+    if (this.score == -1 && this.currentDifficulty != 'solve') {
+      this.score = setInterval(() => {
+        this.currentTime++;
+      }, 1000);
+      console.log(this.score)
+    }
   }
 
   unmounted() {
-    clearInterval(this.interval);
+    clearInterval(this.score);
   }
 
   get sameValues(): Set<number> {
@@ -131,9 +134,11 @@ export default class Game extends Vue {
         this.game.start(this.currentDifficulty);
         this.gameString = this.game.getString();
         this.currentTime = 0;
-        this.interval = setInterval(() => {
-          this.currentTime++;
-        }, 1000);
+        if (this.score == -1) {
+          this.score = setInterval(() => {
+            this.currentTime++;
+          }, 1000);
+        }
         break;
       }
       default:
@@ -150,11 +155,13 @@ export default class Game extends Vue {
     if (!this.game.isGameOver) {
       this.game.setSquareValue(value, this.selectedSquare);
       this.selectedValues = this.game.getAllSameValues(this.selectedSquare);
-      if (this.game.isGameOver) {
+      if (this.game.isGameOver && this.currentDifficulty != 'solve') {
         this.handleGameFinished();
       }
     } else {
-      this.handleGameFinished();
+      if(this.currentDifficulty != 'solve') {
+        this.handleGameFinished();
+      }
     }
   };
 
@@ -187,10 +194,26 @@ export default class Game extends Vue {
   handleGameFinished = () => {
     this.selectedSquare = -1;
     this.selectedValues = [];
-    this.isOverlayVisible = true;
-    clearInterval(this.interval);
+    console.log(this.gameString)
     this.gameString = this.game.getCurrentGameString();
+    console.log(this.score)
+    if (this.score != -1) {
+      clearInterval(this.score);
+      this.score = -1;
+      let time = window.localStorage.getItem(this.currentDifficulty + "Time");
+      let arr = [];
+      if (time) {
+        arr = JSON.parse(time);
+      }
+      arr.push(this.currentTime);
+      window.localStorage.setItem(this.currentDifficulty + "Time", JSON.stringify(arr));
+    }
+    this.isOverlayVisible = true;
   };
+
+  solve() {
+    this.game.setSolvedValues();
+  }
 }
 </script>
 

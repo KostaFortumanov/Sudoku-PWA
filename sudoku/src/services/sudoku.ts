@@ -9,37 +9,55 @@ export default class Sudoku {
 
   public start(difficulty: string) {
     this.sudokuString = this.getEmptyGrid();
-    this.sudokuString = this.fillGrid(this.sudokuString, 0);
-    console.log("filled " + this.sudokuString);
-    this.solveGrid();
-    this.solvedString = this.sudokuString;
-    console.log("solved " + this.sudokuString);
-    if (difficulty == "easy") {
-      this.limit = 45;
-      this.maxEmptyCells = 5;
-      this.sudokuString = this.digCells(this.generateRandomCells());
-      console.log(this.sudokuString);
-    } else if (difficulty == "medium") {
-      this.limit = 49;
-      this.maxEmptyCells = 6;
-      this.sudokuString = this.digCells(this.generateJumpingOnceCells());
-      console.log(this.sudokuString);
-    } else if (difficulty == "hard") {
-      this.limit = 53;
-      this.maxEmptyCells = 7;
-      this.sudokuString = this.digCells(this.generateWanderingAlongSCells());
-      console.log(this.sudokuString);
-    } else if (difficulty == "extreme") {
-      this.limit = 59;
-      this.maxEmptyCells = 9;
-      this.sudokuString = this.digCells(this.generateOrderedCells());
-      console.log(this.sudokuString);
+    if (difficulty != "solve") {
+      this.sudokuString = this.fillGrid(this.sudokuString, 0);
+      console.log("filled " + this.sudokuString);
+      this.solveGrid();
+      this.solvedString = this.sudokuString;
+      console.log("solved " + this.sudokuString);
+      if (difficulty == "easy") {
+        this.limit = 45;
+        this.maxEmptyCells = 5;
+        this.sudokuString = this.digCells(this.generateRandomCells());
+        console.log(this.sudokuString);
+      } else if (difficulty == "medium") {
+        this.limit = 49;
+        this.maxEmptyCells = 6;
+        this.sudokuString = this.digCells(this.generateJumpingOnceCells());
+        console.log(this.sudokuString);
+      } else if (difficulty == "hard") {
+        this.limit = 53;
+        this.maxEmptyCells = 7;
+        this.sudokuString = this.digCells(this.generateWanderingAlongSCells());
+        console.log(this.sudokuString);
+      } else if (difficulty == "extreme") {
+        this.limit = 59;
+        this.maxEmptyCells = 9;
+        this.sudokuString = this.digCells(this.generateOrderedCells());
+        console.log(this.sudokuString);
+      }
     }
 
     for (let i = 0; i < 81; i++) {
       this.gameSquares[i] = this.sudokuString.charAt(i) != ".";
       this.values[i] = this.sudokuString.charAt(i);
       this._incorrectSquares[i] = false;
+    }
+  }
+
+  public setSolvedValues() {
+    this.sudokuString = this.getCurrentGameString();
+    let canSolve = true;
+    for (let i = 0; i < 81; i++) {
+      if (this._incorrectSquares[i]) {
+        canSolve = false;
+      }
+    }
+    if (canSolve) {
+      this.solveGrid();
+      for (let i = 0; i < 81; i++) {
+        this.values[i] = this.sudokuString.charAt(i);
+      }
     }
   }
 
