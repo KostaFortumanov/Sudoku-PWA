@@ -94,14 +94,14 @@ export default class Home extends Vue {
     flex-direction: column;
 
     button {
-      border: solid 1px #1489ff;
-      background: #1489ff;
       color: #ffffff;
       font-size: 20px;
+      border: solid 1px #1489ff;
+      background: #1489ff;
       cursor: pointer;
-      padding: 8px;
+      border-radius: 0.5rem;
+      padding: 1rem 2rem;
       margin-bottom: 1em;
-      width: 200px;
 
       &:hover {
         background: #ffffff;
