@@ -46,6 +46,7 @@ import { Options, Vue } from "vue-class-component";
 import Cell from "./Cell.vue";
 import Controls from "./Controls.vue";
 
+import LeaderboardService from '../services/leaderboard-service'
 import Sudoku from "../services/sudoku";
 
 @Options({
@@ -200,13 +201,7 @@ export default class Game extends Vue {
     if (this.score != -1) {
       clearInterval(this.score);
       this.score = -1;
-      let time = window.localStorage.getItem(this.currentDifficulty + "Time");
-      let arr = [];
-      if (time) {
-        arr = JSON.parse(time);
-      }
-      arr.push(this.currentTime);
-      window.localStorage.setItem(this.currentDifficulty + "Time", JSON.stringify(arr));
+      LeaderboardService.saveTime(this.currentDifficulty, this.currentTime)
     }
     this.isOverlayVisible = true;
   };

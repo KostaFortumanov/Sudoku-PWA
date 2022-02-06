@@ -21,16 +21,36 @@
         <span :class="{ active: hardTimes }" class="link" @click="getTimes('hard')">Hard</span>
       </div>
     </div>
+    <div v-if="myTimes">
     <div v-for="(time, index) in times" :key="time">
       <p><span class="number">{{ index + 1 }}.</span> <span>{{ formatTime(time) }}</span></p>
+    </div>
+    </div>
+    <div v-if="!myTimes">
+    <table>
+      <tr v-for="(time) in onlineTimes.slice(0, 10)" :key="time">
+        <td>{{ time.order }}.{{ time.name }}</td>
+        <td>{{ formatTime(time.time) }}</td>
+      </tr>
+      <tr v-if="onlineTimes.length > 10">
+        <td>...</td>
+      </tr>
+      <tr v-if="onlineTimes.length > 10">
+        <td>{{ onlineTimes[10].order }}.{{ onlineTimes[10].name }}</td>
+        <td>{{ formatTime(onlineTimes[10].time) }}</td>
+      </tr>
+    </table>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import LeaderboardService from '../services/leaderboard-service';
+import {LeaderboardTime} from '../models/LeaderboardTime'
 export default class Leaderboard extends Vue {
   times = [];
+  onlineTimes: LeaderboardTime[] = [];
   myTimes = true;
   easyTimes = true;
   mediumTimes = false;
@@ -54,9 +74,15 @@ export default class Leaderboard extends Vue {
       this.times = [];
       let time = window.localStorage.getItem(difficulty + "Time");
       if (time) {
-        this.times = JSON.parse(time);
+        this.times = JSON.parse(time).map((t: { time: number; }) => t.time);
         this.times.sort((a, b) => a - b);
       }
+    } else {
+      LeaderboardService.getLeaderboard(difficulty).then(
+        (response) => {
+          this.onlineTimes = response.data;
+        }
+      )
     }
   }
 
@@ -98,7 +124,7 @@ export default class Leaderboard extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .leaderboard {
   font-weight: bold;
   color: #2c3e50;
@@ -110,6 +136,19 @@ export default class Leaderboard extends Vue {
   .active {
     color: #1489ff;
   }
+}
+
+table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+tr td:first-child {
+  text-align: left;
+  min-width: 10em;
+  max-width: 10em;
 }
 
 .number {

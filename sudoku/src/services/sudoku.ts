@@ -16,7 +16,7 @@ export default class Sudoku {
       this.solvedString = this.sudokuString;
       console.log("solved " + this.sudokuString);
       if (difficulty == "easy") {
-        this.limit = 45;
+        this.limit = 1;
         this.maxEmptyCells = 5;
         this.sudokuString = this.digCells(this.generateRandomCells());
         console.log(this.sudokuString);

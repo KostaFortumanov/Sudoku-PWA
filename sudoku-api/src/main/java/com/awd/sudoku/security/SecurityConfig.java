@@ -2,6 +2,7 @@ package com.awd.sudoku.security;
 
 import com.awd.sudoku.security.jwt.AuthTokenFilter;
 import com.awd.sudoku.service.UserService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().anyRequest().permitAll();
 
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
@@ -52,5 +53,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public FilterRegistrationBean<AuthTokenFilter> authFilter() {
+        FilterRegistrationBean<AuthTokenFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(authenticationJwtTokenFilter());
+        registrationBean.addUrlPatterns("/api/leaderboard/*");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
     }
 }
