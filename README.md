@@ -3,6 +3,11 @@
 ## Опис на апликацијата
 Класична 9x9 Судоку PWA изработена со Vue.js, Spring Boot и PostgreSQL.
 
+<div align=center>
+  <img width="400" height="795" src="https://github.com/KostaFortumanov/Sudoku-PWA/blob/main/img/home.jpg">
+  <img width="400" height="795" src="https://github.com/KostaFortumanov/Sudoku-PWA/blob/main/img/game.jpg">
+</div>
+
 Функционалности:
 * Играње судоку во три различни тежини лесна, средна и тешка
 * Судоку решавач кој решава судоку од било каква тежина
@@ -152,6 +157,10 @@
 
 По завршување на игра времето се сочувува локално, доколку корисникот е најавен и има пристап до интернет конекција времето се зачувува и на сервер.
 
+<div align=center>
+  <img width="400" height="795" src="https://github.com/KostaFortumanov/Sudoku-PWA/blob/main/img/leaderboard.jpg">
+</div>
+
 При добивање на интернет конекција сите времиња кој не се зачувани се испраќаат на сервер.
 
 ```ts
@@ -226,3 +235,7 @@
                 });
     }
 ```
+
+<div align=center>
+  <img width="400" height="795" src="https://github.com/KostaFortumanov/Sudoku-PWA/blob/main/img/notification.jpg">
+</div>
