@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] privateMatchers = {
             "/api/leaderboard/saveTime",
             "/api/leaderboard/myTimes/**",
-            "/api/daily/**",
+            "/api/daily",
             "/api/notifications/setToken"
     };
 
@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers(privateMatchers).authenticated()
