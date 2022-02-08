@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://navigation-api.duckdns.org:9091/api/notifications/';
+const API_URL = 'http://localhost:9091/api/notifications/';
 class NotificationService {
 
     subscribe(token: string) {

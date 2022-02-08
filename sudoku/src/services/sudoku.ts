@@ -39,7 +39,7 @@ export default class Sudoku {
 
     if (difficulty == "daily") {
       axios
-        .get("http://navigation-api.duckdns.org:9091/api/daily/", {
+        .get("http://localhost:9091/api/daily/", {
           headers: authHeader(),
         })
         .then(

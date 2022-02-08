@@ -2,7 +2,7 @@ import axios from 'axios';
 import LeaderboardService from './leaderboard-service';
 import NotificationService from './notification-service';
 
-const API_URL = 'http://navigation-api.duckdns.org:9091/api/auth/';
+const API_URL = 'http://localhost:9091/api/auth/';
 
 class AuthService {
   login(user: { username: string; password: string; }) {
