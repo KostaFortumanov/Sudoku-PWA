@@ -40,7 +40,6 @@ public class LeaderboardController {
 
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() != "anonymousUser") {
 
-            System.out.println("logged in");
             Predicate<String> isUserInTopTen = username -> topTen.stream().anyMatch(time -> time.getUser().getUsername().equals(username));
 
             AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -72,9 +71,18 @@ public class LeaderboardController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
+    @PostMapping("/saveTime")
     public void saveTime(@RequestBody SaveTimeRequest saveTimeRequest) {
+
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(saveTimeRequest.getDifficulty().equalsIgnoreCase("daily")) {
+            if(user.getFinishedDaily()) {
+                return;
+            }
+            user.setFinishedDaily(true);
+            userService.save(user);
+        }
+
         LeaderboardTime leaderboardTime = new LeaderboardTime(
                 saveTimeRequest.getTime(),
                 Difficulty.valueOf(saveTimeRequest.getDifficulty().toUpperCase()),

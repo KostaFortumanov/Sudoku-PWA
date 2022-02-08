@@ -12,42 +12,69 @@
         <br /><br />
       </div>
       <div>
-        <span :class="{ active: easyTimes }" class="link" @click="getTimes('easy')">Easy</span>
+        <span
+          :class="{ active: easyTimes }"
+          class="link"
+          @click="getTimes('easy')"
+          >Easy</span
+        >
         |
-        <span :class="{ active: mediumTimes }" class="link" @click="getTimes('medium')"
+        <span
+          :class="{ active: mediumTimes }"
+          class="link"
+          @click="getTimes('medium')"
           >Medium</span
         >
         |
-        <span :class="{ active: hardTimes }" class="link" @click="getTimes('hard')">Hard</span>
+        <span
+          :class="{ active: hardTimes }"
+          class="link"
+          @click="getTimes('hard')"
+          >Hard</span
+        >
       </div>
     </div>
     <div v-if="myTimes">
-    <div v-for="(time, index) in times" :key="time">
-      <p><span class="number">{{ index + 1 }}.</span> <span>{{ formatTime(time) }}</span></p>
-    </div>
+      <div v-for="(time, index) in times" :key="time">
+        <p>
+          <span class="number">{{ index + 1 }}.</span>
+          <span>{{ formatTime(time) }}</span>
+        </p>
+      </div>
     </div>
     <div v-if="!myTimes">
-    <table>
-      <tr v-for="(time) in onlineTimes.slice(0, 10)" :key="time">
-        <td>{{ time.order }}.{{ time.name }}</td>
-        <td>{{ formatTime(time.time) }}</td>
-      </tr>
-      <tr v-if="onlineTimes.length > 10">
-        <td>...</td>
-      </tr>
-      <tr v-if="onlineTimes.length > 10">
-        <td>{{ onlineTimes[10].order }}.{{ onlineTimes[10].name }}</td>
-        <td>{{ formatTime(onlineTimes[10].time) }}</td>
-      </tr>
-    </table>
+      <div v-if="isConnected()">
+        <div v-if="loading">
+          <p>Loading...</p>
+        </div>
+        <div v-else>
+          <table>
+            <tr v-for="time in onlineTimes.slice(0, 10)" :key="time">
+              <td>{{ time.order }}.{{ time.name }}</td>
+              <td>{{ formatTime(time.time) }}</td>
+            </tr>
+            <tr v-if="onlineTimes.length > 10">
+              <td>...</td>
+            </tr>
+            <tr v-if="onlineTimes.length > 10">
+              <td>{{ onlineTimes[10].order }}.{{ onlineTimes[10].name }}</td>
+              <td>{{ formatTime(onlineTimes[10].time) }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div v-else>
+        <p>No connection</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import LeaderboardService from '../services/leaderboard-service';
-import {LeaderboardTime} from '../models/LeaderboardTime'
+import LeaderboardService from "../services/leaderboard-service";
+import { LeaderboardTime } from "../models/LeaderboardTime";
+import { useStore } from "vuex";
 export default class Leaderboard extends Vue {
   times = [];
   onlineTimes: LeaderboardTime[] = [];
@@ -55,62 +82,45 @@ export default class Leaderboard extends Vue {
   easyTimes = true;
   mediumTimes = false;
   hardTimes = false;
+  loading = false;
+  connected = false;
+  store: any = null;
+
+  created() {
+    this.store = useStore();
+  }
+
+  isConnected = () => {
+    return this.store.state.onlineStatus;
+  }
 
   mounted() {
-    this.getTimes('easy');
+    this.getTimes("easy");
   }
 
   changeType() {
     this.times = [];
     this.myTimes = !this.myTimes;
-    this.getTimes('easy')
+    this.getTimes("easy");
   }
 
   getTimes(difficulty: string) {
-    this.easyTimes = difficulty == 'easy';
-    this.mediumTimes = difficulty == 'medium';
-    this.hardTimes = difficulty == 'hard';
+    this.easyTimes = difficulty == "easy";
+    this.mediumTimes = difficulty == "medium";
+    this.hardTimes = difficulty == "hard";
     if (this.myTimes) {
       this.times = [];
       let time = window.localStorage.getItem(difficulty + "Time");
       if (time) {
-        this.times = JSON.parse(time).map((t: { time: number; }) => t.time);
+        this.times = JSON.parse(time).map((t: { time: number }) => t.time);
         this.times.sort((a, b) => a - b);
       }
     } else {
-      LeaderboardService.getLeaderboard(difficulty).then(
-        (response) => {
-          this.onlineTimes = response.data;
-        }
-      )
-    }
-  }
-
-  getMediumTimes() {
-    this.easyTimes = false;
-    this.mediumTimes = true;
-    this.hardTimes = false;
-    if (this.myTimes) {
-      this.times = [];
-      let time = window.localStorage.getItem("mediumTime");
-      if (time) {
-        this.times = JSON.parse(time);
-        this.times.sort((a, b) => a - b);
-      }
-    }
-  }
-
-  getHardTimes() {
-    this.easyTimes = false;
-    this.mediumTimes = false;
-    this.hardTimes = true;
-    if (this.myTimes) {
-      this.times = [];
-      let time = window.localStorage.getItem("hardTime");
-      if (time) {
-        this.times = JSON.parse(time);
-        this.times.sort((a, b) => a - b);
-      }
+      this.loading = true;
+      LeaderboardService.getLeaderboard(difficulty).then((response) => {
+        this.onlineTimes = response.data;
+        this.loading = false;
+      });
     }
   }
 

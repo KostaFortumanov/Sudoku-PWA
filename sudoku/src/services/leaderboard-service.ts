@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:9091/api/leaderboard/";
+const API_URL = "http://navigation-api.duckdns.org:9091/api/leaderboard/";
 
 class LeaderboardService {
   getLeaderboard(difficulty: string) {
@@ -11,7 +11,7 @@ class LeaderboardService {
   getMyTimes(difficulty: string) {
       return axios.get(API_URL + 'myTimes/' + difficulty, { headers: authHeader()}).then((response)=>{
 
-          let old = window.localStorage.getItem(difficulty + "Time");
+          const old = window.localStorage.getItem(difficulty + "Time");
 
           let arr = [];
           for(const time of response.data) {
@@ -39,7 +39,7 @@ class LeaderboardService {
 
     return axios
       .post(
-        API_URL,
+        API_URL + 'saveTime',
         {
           difficulty: difficulty,
           time: time,
@@ -54,7 +54,6 @@ class LeaderboardService {
           isBackedUp = false;
       })
       .then(() => {
-        console.log('finnaly ' + time)
         const t = window.localStorage.getItem(difficulty + "Time");
         let arr = [];
         if (t) {

@@ -66,6 +66,12 @@ export default class Home extends Vue {
     this.solving = true;
   }
 
+  dailyChallenge() {
+    this.difficulty = "daily";
+    this.playing = true;
+    this.solving = false;
+  }
+
   goBack() {
     this.playing = false;
     this.solving = false;

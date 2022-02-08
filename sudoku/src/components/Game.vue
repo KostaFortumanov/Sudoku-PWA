@@ -148,7 +148,6 @@ export default class Game extends Vue {
   }
 
   onOverlayClick = () => {
-    console.log(this.isOverlayVisible);
     this.isOverlayVisible = false;
   };
 
@@ -195,9 +194,7 @@ export default class Game extends Vue {
   handleGameFinished = () => {
     this.selectedSquare = -1;
     this.selectedValues = [];
-    console.log(this.gameString)
     this.gameString = this.game.getCurrentGameString();
-    console.log(this.score)
     if (this.score != -1) {
       clearInterval(this.score);
       this.score = -1;

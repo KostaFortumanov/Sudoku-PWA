@@ -46,6 +46,11 @@
             <version>0.9.1</version>
         </dependency>
         <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -58,6 +63,9 @@
     </dependencies>
 
     <build>
+
+        <finalName>sudoku-api</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

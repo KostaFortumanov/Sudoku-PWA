@@ -76,7 +76,6 @@ export default class Register extends Vue {
   background: #fff;
   border-radius: 0.25rem;
   padding: 1rem;
-  //   box-shadow: 0 0 2rem rgba(0,0,0,0.5);
 }
 
 .input-group {

@@ -1,7 +1,8 @@
 import axios from 'axios';
-import LeaderboardService from './leaderboard-service'
+import LeaderboardService from './leaderboard-service';
+import NotificationService from './notification-service';
 
-const API_URL = 'http://localhost:9091/api/auth/';
+const API_URL = 'http://navigation-api.duckdns.org:9091/api/auth/';
 
 class AuthService {
   login(user: { username: string; password: string; }) {
@@ -13,6 +14,11 @@ class AuthService {
       .then((response: { data: { token: any; }; }) => {
         if (response.data.token) {
           localStorage.setItem('user', JSON.stringify(response.data));
+        }
+
+        const token = window.localStorage.getItem('notificationToken');
+        if(token) {
+          NotificationService.setToken(token);
         }
 
         LeaderboardService.getMyTimes('easy');

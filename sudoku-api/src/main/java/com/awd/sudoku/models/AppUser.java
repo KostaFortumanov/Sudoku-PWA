@@ -26,6 +26,8 @@ public class AppUser implements UserDetails {
 
     private String username;
     private String password;
+    private Boolean finishedDaily = false;
+    private String notificationToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

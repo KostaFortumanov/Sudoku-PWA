@@ -40,6 +40,10 @@ public class LeaderboardService {
         return leaderboardRepository.countAllByUser(user) > 0;
     }
 
+    public void deleteAll(List<LeaderboardTime> times) {
+        leaderboardRepository.deleteAll(times);
+    }
+
     public void save(LeaderboardTime leaderboardTime) {
         leaderboardRepository.save(leaderboardTime);
     }
